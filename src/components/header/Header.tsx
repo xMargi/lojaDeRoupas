@@ -1,8 +1,13 @@
 import { ShoppingBag, Heart, Search, User } from "lucide-react"
 import { UserDropdown } from "./UserDropdown"
 import { ShopSubmenu } from "./ShopPopOver"
+import { useState } from "react"
+import { useSearchHeader } from "../../hooks/useSearchHeader"
 
 export function Header() {
+  const [query, setQuery] = useState("")
+  const { handleSubmit } = useSearchHeader(query, setQuery)
+
   return (
     <header className="absolute top-0 left-0 w-full px-6 py-4 z-50 bg-transparent hover:bg-[#BC9977] transition-colors duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -21,15 +26,21 @@ export function Header() {
 
         {/* Ações */}
         <div className="flex items-center gap-6 text-white text-base">
-          <input
-            type="text"
-            placeholder="Procurar"
-            className="bg-transparent border-b border-white/30 focus:outline-none focus:border-white text-sm placeholder-white/50 w-32"
-          />
-          <Search size={22} />
+          <form onSubmit={handleSubmit} className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Procurar"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="bg-transparent border-b border-white/30 focus:outline-none focus:border-white text-sm placeholder-white/50 w-32"
+            />
+            <button type="submit">
+              <Search size={22} className="cursor-pointer hover:scale-110 transition" />
+            </button>
+          </form>
+
           <Heart size={22} />
-          <div className="flex items-center gap-4 text-white">
-            {/* outros ícones */}
+          <div className="flex items-center gap-4">
             <User size={22} />
             <UserDropdown />
           </div>

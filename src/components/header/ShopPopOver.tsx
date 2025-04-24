@@ -15,10 +15,10 @@ export function ShopSubmenu() {
             <AnimatePresence>
                 {isHovered && (
                     <motion.div
-                        initial={{ height: 0, opacity: 0, left: 0 }}
+                        initial={{ height: 0, opacity: 0, left: 0,}}
                         animate={{ height: 470, opacity: 1, left: -675 }}
                         exit={{ height: 0, opacity: 0, }}
-                        transition={{ duration: 0.4 }}
+                        transition={{ duration: 0.1 }}
                         className="absolute left-0 top-full w-screen bg-[#BC9977] overflow-hidden z-50"
                     >
                         <div className="flex h-full">
