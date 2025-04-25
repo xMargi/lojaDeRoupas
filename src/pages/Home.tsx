@@ -11,7 +11,31 @@ export default function Home() {
 
       <CarrosselProdutos />
 
-      <CategorySlider title="Camisas" images={['/produtos9_16/1.png','/produtos9_16/2.png','/produtos9_16/3.png']} id="camisas"/>
+      <CategorySlider
+        title="Camisas"
+        id="camisas"
+        items={[
+          {
+            id: "1",
+            name: "Camisa Oversized Branca",
+            price: "R$ 129,90",
+            image: "/produtos9_16/1.png",
+          },
+          {
+            id: "2",
+            name: "Camisa Preta Básica",
+            price: "R$ 99,90",
+            image: "/produtos9_16/2.png",
+          },
+          {
+            id: "3",
+            name: "Camisa Estampada",
+            price: "R$ 149,90",
+            image: "/produtos9_16/3.png",
+          },
+        ]}
+      />
+
 
       {/* Divider personalizado */}
       <div className="w-full px-6">
@@ -20,7 +44,7 @@ export default function Home() {
 
       <VideoCarrossel />
 
-      <Banner src="/banner/banner1.jpeg" titulo="" destaque="" subtitulo="" cupom="" tituloPrincipal=""/>
+      <Banner src="/banner/banner1.jpeg" titulo="" destaque="" subtitulo="" cupom="" tituloPrincipal="" />
     </>
   )
 }

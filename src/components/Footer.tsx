@@ -2,7 +2,7 @@ import { Facebook, Instagram, Youtube } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#BC9977] text-white px-6 py-10 mt-20">
+    <footer className="w-full bg-[#BC9977] text-white px-6 py-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-sm">
         
         {/* Logo e nome */}

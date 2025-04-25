@@ -1,13 +1,20 @@
-import { Footer } from "./components/Footer"
-import { Header } from "./components/header/Header"
-import Home from "./pages/Home"
+import { AppRoutes } from "@/routes"
+import { Header } from "@/components/header/Header"
+import { Footer } from "@/components/Footer"
+import { useLocation } from "react-router-dom"
 
 function App() {
+  const location = useLocation()
+
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register"
+
   return (
     <>
-      <Header />
-      <Home />
-      <Footer />
+      {!isAuthPage && <Header />}
+      <main className="flex-1">
+        <AppRoutes />
+      </main>
+      {!isAuthPage && <Footer />}
     </>
   )
 }
