@@ -1,13 +1,15 @@
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { motion } from "framer-motion"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link, useNavigate } from "react-router-dom"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { useUser } from "@/contexts/UserContext"
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useUser()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -18,12 +20,8 @@ export default function Login() {
       return
     }
     setError("")
-    
-    // Simula login com sucesso
-    console.log("Login:", { email, password })
-    
-    // Redireciona para Home
-    navigate("/")
+    login()           // atualiza o contexto e persiste no localStorage
+    navigate("/")     // manda pra home
   }
 
   return (
@@ -71,8 +69,8 @@ export default function Login() {
             )}
 
             <Button
-              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
               onClick={handleLogin}
+              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
             >
               Entrar
             </Button>

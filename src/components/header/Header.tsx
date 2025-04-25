@@ -1,20 +1,25 @@
-import { ShoppingBag, Heart, Search, User } from "lucide-react"
+import { useState } from "react"
+import { ShoppingBag, Heart, Search, User as UserIcon } from "lucide-react"
+import { useSearchHeader } from "@/hooks/useSearchHeader"
+import { useUser } from "@/contexts/UserContext"
 import { UserDropdown } from "./UserDropdown"
 import { ShopSubmenu } from "./ShopPopOver"
-import { useState } from "react"
-import { useSearchHeader } from "../../hooks/useSearchHeader"
 
 export function Header() {
   const [query, setQuery] = useState("")
   const { handleSubmit } = useSearchHeader(query, setQuery)
+  const { isLoggedIn, logout } = useUser()
 
   return (
     <header className="absolute top-0 left-0 w-full px-6 py-4 z-50 bg-transparent hover:bg-[#BC9977] transition-colors duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-
         {/* Logo */}
         <div className="h-8 md:h-10 flex items-center">
-          <img src="/logoMaluPng.png" alt="Logo" className="h-full w-auto object-contain" />
+          <img
+            src="/logoMaluPng.png"
+            alt="Logo"
+            className="h-full w-auto object-contain"
+          />
         </div>
 
         {/* Menu */}
@@ -39,14 +44,29 @@ export function Header() {
             </button>
           </form>
 
-          <Heart size={22} />
+          <Heart size={22} className="hover:scale-110 transition" />
+
           <div className="flex items-center gap-4">
-            <User size={22} />
-            <UserDropdown />
+            {isLoggedIn ? (
+              <>
+                <UserIcon size={22} className="cursor-pointer hover:scale-110 transition" />
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-1 text-sm font-bold hover:underline"
+                >
+                  <span className="underline">LOGOUT</span>
+                </button>
+              </>
+            ) : (
+              <UserDropdown />
+            )}
           </div>
+
           <div className="relative">
-            <ShoppingBag size={24} />
-            <span className="absolute -top-1 -right-2 text-[11px] bg-white text-black rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+            <ShoppingBag size={24} className="hover:scale-110 transition" />
+            <span className="absolute -top-1 -right-2 text-[11px] bg-white text-black rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              0
+            </span>
           </div>
         </div>
       </div>

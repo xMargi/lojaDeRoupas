@@ -1,23 +1,22 @@
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { motion } from "framer-motion"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useUser } from "@/contexts/UserContext"
 
 export default function Register() {
   const navigate = useNavigate()
+  const { login } = useUser()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
 
-  const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return regex.test(email)
-  }
+  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   const handleRegister = () => {
     if (!name || !email || !password || !confirmPassword) {
@@ -33,9 +32,8 @@ export default function Register() {
       return
     }
     setError("")
-    
-    console.log("Cadastro:", { name, email, password })
-    navigate("/")
+    login()          // registra como logado
+    navigate("/")    // manda pra home
   }
 
   return (
@@ -107,8 +105,8 @@ export default function Register() {
             )}
 
             <Button
-              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
               onClick={handleRegister}
+              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
             >
               Criar Conta
             </Button>

@@ -38,7 +38,7 @@ export function UserDropdown() {
             Entrar
           </button>
           <button
-            onClick={() => navigate("/registro")}
+            onClick={() => navigate("/register")}
             className="w-full text-left px-4 py-2 hover:bg-[#BC9977] hover:text-white transition"
           >
             Criar conta

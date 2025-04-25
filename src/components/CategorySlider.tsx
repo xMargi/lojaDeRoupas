@@ -1,6 +1,7 @@
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
+import { CategoryProductCard } from "./CategoryProductCard" // importa o novo card
 
 interface CategoryItem {
   id: string
@@ -66,22 +67,7 @@ export function CategorySlider({ title, items, id }: CategorySliderProps) {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-6">
           {duplicatedItems.map((item, index) => (
-            <div
-              key={item.id + index}
-              className="min-w-[240px] max-w-[260px] shrink-0 bg-white border shadow-md hover:shadow-lg transition"
-            >
-              <div className="aspect-[3/4] overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-4 text-center">
-                <h3 className="text-base font-semibold">{item.name}</h3>
-                <p className="text-base text-[#BC9977] font-medium">{item.price}</p>
-              </div>
-            </div>
+            <CategoryProductCard key={item.id + index} produto={item} />
           ))}
         </div>
       </div>
