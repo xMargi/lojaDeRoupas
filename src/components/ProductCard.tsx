@@ -2,10 +2,12 @@ import { useState } from "react"
 import { Heart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@/contexts/UserContext"
+import { useCart, CartItem } from "@/contexts/CartContext"
 
 interface Produto {
+  id: string
   nome: string
-  preco: string
+  preco: string    // <— continua string
   imagem: string
 }
 
@@ -16,6 +18,8 @@ interface ProductCardProps {
 export function ProductCard({ produto }: ProductCardProps) {
   const navigate = useNavigate()
   const { isLoggedIn } = useUser()
+  const { addItem } = useCart()
+
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [isFavorited, setIsFavorited] = useState(false)
   const [animate, setAnimate] = useState(false)
@@ -23,13 +27,40 @@ export function ProductCard({ produto }: ProductCardProps) {
 
   const handleFavorite = () => {
     if (!isLoggedIn) {
-      // se não logado, manda pra página de login
       navigate("/login")
       return
     }
     setIsFavorited(!isFavorited)
     setAnimate(true)
     setTimeout(() => setAnimate(false), 300)
+  }
+
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      navigate("/login")
+      return
+    }
+    if (!selectedSize) {
+      alert("Selecione um tamanho antes de adicionar.")
+      return
+    }
+    // converter preco string em número (ex: "R$ 89,90" -> 89.90)
+    const numericPrice = Number(
+      produto.preco
+        .replace("R$", "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .trim()
+    )
+    const item: CartItem = {
+      id: produto.id,
+      name: produto.nome,
+      price: numericPrice,
+      image: produto.imagem,
+      size: selectedSize,
+      quantity: 1,
+    }
+    addItem(item)
   }
 
   return (
@@ -75,7 +106,10 @@ export function ProductCard({ produto }: ProductCardProps) {
                 </button>
               ))}
             </div>
-            <button className="mt-2 bg-black text-white text-xs uppercase py-2 w-full transition hover:bg-zinc-800">
+            <button
+              onClick={handleAddToCart}
+              className="mt-2 bg-black text-white text-xs uppercase py-2 w-full transition hover:bg-zinc-800"
+            >
               Adicionar à sacola
             </button>
           </div>
@@ -83,7 +117,9 @@ export function ProductCard({ produto }: ProductCardProps) {
 
         <div className="p-3 text-center">
           <h3 className="text-sm font-semibold">{produto.nome}</h3>
-          <p className="text-sm text-[#BC9977] font-medium">{produto.preco}</p>
+          <p className="text-sm text-[#BC9977] font-medium">
+            {produto.preco}
+          </p>
         </div>
       </div>
     </div>

@@ -2,11 +2,12 @@ import { useState } from "react"
 import { Heart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@/contexts/UserContext"
+import { useCart, CartItem } from "@/contexts/CartContext"
 
 interface Produto {
   id: string
   name: string
-  price: string
+  price: string    // <— string aqui também
   image: string
 }
 
@@ -17,6 +18,8 @@ interface CategoryProductCardProps {
 export function CategoryProductCard({ produto }: CategoryProductCardProps) {
   const navigate = useNavigate()
   const { isLoggedIn } = useUser()
+  const { addItem } = useCart()
+
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [isFavorited, setIsFavorited] = useState(false)
   const [animate, setAnimate] = useState(false)
@@ -30,6 +33,33 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
     setIsFavorited(!isFavorited)
     setAnimate(true)
     setTimeout(() => setAnimate(false), 300)
+  }
+
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      navigate("/login")
+      return
+    }
+    if (!selectedSize) {
+      alert("Selecione um tamanho antes de adicionar.")
+      return
+    }
+    const numericPrice = Number(
+      produto.price
+        .replace("R$", "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .trim()
+    )
+    const item: CartItem = {
+      id: produto.id,
+      name: produto.name,
+      price: numericPrice,
+      image: produto.image,
+      size: selectedSize,
+      quantity: 1,
+    }
+    addItem(item)
   }
 
   return (
@@ -71,7 +101,10 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
               </button>
             ))}
           </div>
-          <button className="w-full bg-black text-white text-xs py-2 uppercase hover:bg-zinc-800 transition">
+          <button
+            onClick={handleAddToCart}
+            className="w-full bg-black text-white text-xs py-2 uppercase hover:bg-zinc-800 transition"
+          >
             Adicionar
           </button>
         </div>
@@ -79,7 +112,9 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
 
       <div className="p-4 text-center">
         <h3 className="text-base font-semibold">{produto.name}</h3>
-        <p className="text-base text-[#BC9977] font-medium">{produto.price}</p>
+        <p className="text-base text-[#BC9977] font-medium">
+          {produto.price}
+        </p>
       </div>
     </div>
   )

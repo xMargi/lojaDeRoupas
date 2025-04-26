@@ -4,13 +4,16 @@ import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import { UserProvider } from './contexts/UserContext' // importa o Provider
 import './index.css'
+import { CartProvider } from './contexts/CartContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <UserProvider> {/* <<-- adiciona aqui */}
+  <BrowserRouter>
+    <UserProvider>
+      <CartProvider>
         <App />
-      </UserProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+      </CartProvider>
+    </UserProvider>
+  </BrowserRouter>
+</React.StrictMode>
 )
