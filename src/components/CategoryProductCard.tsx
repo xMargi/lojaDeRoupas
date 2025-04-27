@@ -1,51 +1,41 @@
+// src/components/CategoryProductCard.tsx
 import { useState } from "react"
 import { Heart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@/contexts/UserContext"
 import { useCart, CartItem } from "@/contexts/CartContext"
-
-interface Produto {
-  id: string
-  name: string
-  price: string    // <— string aqui também
-  image: string
-}
+import { Product } from "@/data/products"
 
 interface CategoryProductCardProps {
-  produto: Produto
+  produto: Product
 }
 
 export function CategoryProductCard({ produto }: CategoryProductCardProps) {
   const navigate = useNavigate()
   const { isLoggedIn } = useUser()
   const { addItem } = useCart()
-
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [isFavorited, setIsFavorited] = useState(false)
   const [animate, setAnimate] = useState(false)
   const tamanhos = ["P", "M", "G", "GG"]
 
-  const handleFavorite = () => {
-    if (!isLoggedIn) {
-      navigate("/login")
-      return
-    }
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isLoggedIn) return navigate("/login")
     setIsFavorited(!isFavorited)
     setAnimate(true)
     setTimeout(() => setAnimate(false), 300)
   }
 
-  const handleAddToCart = () => {
-    if (!isLoggedIn) {
-      navigate("/login")
-      return
-    }
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isLoggedIn) return navigate("/login")
     if (!selectedSize) {
       alert("Selecione um tamanho antes de adicionar.")
       return
     }
     const numericPrice = Number(
-      produto.price
+      produto.preco
         .replace("R$", "")
         .replace(/\./g, "")
         .replace(",", ".")
@@ -53,9 +43,9 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
     )
     const item: CartItem = {
       id: produto.id,
-      name: produto.name,
+      name: produto.nome,
       price: numericPrice,
-      image: produto.image,
+      image: produto.imagem,
       size: selectedSize,
       quantity: 1,
     }
@@ -63,10 +53,12 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
   }
 
   return (
-    <div className="min-w-[240px] max-w-[260px] shrink-0 relative group bg-white border shadow-md hover:shadow-lg transition">
+    <div
+      onClick={() => navigate(`/product/${produto.id}`)}
+      className="min-w-[240px] max-w-[260px] shrink-0 relative group bg-white border shadow-md hover:shadow-lg transition cursor-pointer"
+    >
       <div className="aspect-[3/4] relative overflow-hidden">
         <button
-          key={animate ? "animate" : "static"}
           onClick={handleFavorite}
           className={`absolute top-2 right-2 z-10 bg-white rounded-full p-1 shadow hover:scale-110 transition ${
             animate ? "animate-[pingOnce_0.3s_ease-out]" : ""
@@ -80,8 +72,8 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
         </button>
 
         <img
-          src={produto.image}
-          alt={produto.name}
+          src={produto.imagem}
+          alt={produto.nome}
           className="w-full h-full object-cover"
         />
 
@@ -90,7 +82,10 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
             {tamanhos.map((size) => (
               <button
                 key={size}
-                onClick={() => setSelectedSize(size)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setSelectedSize(size)
+                }}
                 className={`w-8 h-8 border text-sm font-semibold transition ${
                   selectedSize === size
                     ? "bg-black text-white"
@@ -111,10 +106,8 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
       </div>
 
       <div className="p-4 text-center">
-        <h3 className="text-base font-semibold">{produto.name}</h3>
-        <p className="text-base text-[#BC9977] font-medium">
-          {produto.price}
-        </p>
+        <h3 className="text-base font-semibold">{produto.nome}</h3>
+        <p className="text-base text-[#BC9977] font-medium">{produto.preco}</p>
       </div>
     </div>
   )

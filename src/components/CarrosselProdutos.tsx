@@ -1,33 +1,20 @@
-import useEmblaCarousel from 'embla-carousel-react'
-import { useCallback } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { ProductCard } from "./ProductCard"
-
-interface Produto {
-  nome: string
-  preco: string
-  imagem: string
-}
-
-const produtos: Produto[] = [
-  { nome: "Camiseta Básica", preco: "R$ 89,90", imagem: "/produtos9_16/1.png" },
-  { nome: "Moletom Oversized", preco: "R$ 149,90", imagem: "/produtos9_16/2.png" },
-  { nome: "Tênis Street", preco: "R$ 299,90", imagem: "/produtos9_16/3.png" },
-  { nome: "Jaqueta Windbreaker", preco: "R$ 199,90", imagem: "/produtos9_16/1.png" },
-  { nome: "Boné Estampado", preco: "R$ 59,90", imagem: "/produtos9_16/2.png" },
-  { nome: "Calça Jogger", preco: "R$ 139,90", imagem: "/produtos9_16/3.png" },
-]
+// src/components/CarrosselProdutos.tsx
+import useEmblaCarousel from "embla-carousel-react";
+import { useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ProductCard } from "./ProductCard";
+import { PRODUCTS } from "@/data/products";
 
 export function CarrosselProdutos() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" })
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
 
   const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev()
-  }, [emblaApi])
+    emblaApi?.scrollPrev();
+  }, [emblaApi]);
 
   const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext()
-  }, [emblaApi])
+    emblaApi?.scrollNext();
+  }, [emblaApi]);
 
   return (
     <section className="w-full py-16 px-6 bg-white relative">
@@ -52,13 +39,13 @@ export function CarrosselProdutos() {
           {/* Carrossel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
-              {produtos.map((produto, index) => (
-                <ProductCard key={index} produto={produto} />
+              {PRODUCTS.map((produto) => (
+                <ProductCard key={produto.id} produto={produto} />
               ))}
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

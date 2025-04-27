@@ -1,18 +1,13 @@
+// src/components/ProductCard.tsx
 import { useState } from "react"
 import { Heart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@/contexts/UserContext"
 import { useCart, CartItem } from "@/contexts/CartContext"
-
-interface Produto {
-  id: string
-  nome: string
-  preco: string    // <— continua string
-  imagem: string
-}
+import { Product } from "@/data/products"
 
 interface ProductCardProps {
-  produto: Produto
+  produto: Product
 }
 
 export function ProductCard({ produto }: ProductCardProps) {
@@ -25,26 +20,21 @@ export function ProductCard({ produto }: ProductCardProps) {
   const [animate, setAnimate] = useState(false)
   const tamanhos = ["P", "M", "G", "GG"]
 
-  const handleFavorite = () => {
-    if (!isLoggedIn) {
-      navigate("/login")
-      return
-    }
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isLoggedIn) return navigate("/login")
     setIsFavorited(!isFavorited)
     setAnimate(true)
     setTimeout(() => setAnimate(false), 300)
   }
 
-  const handleAddToCart = () => {
-    if (!isLoggedIn) {
-      navigate("/login")
-      return
-    }
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isLoggedIn) return navigate("/login")
     if (!selectedSize) {
       alert("Selecione um tamanho antes de adicionar.")
       return
     }
-    // converter preco string em número (ex: "R$ 89,90" -> 89.90)
     const numericPrice = Number(
       produto.preco
         .replace("R$", "")
@@ -64,11 +54,13 @@ export function ProductCard({ produto }: ProductCardProps) {
   }
 
   return (
-    <div className="min-w-[200px] max-w-[220px] flex-shrink-0 group relative">
-      <div className="bg-white border shadow-md transition overflow-hidden relative">
+    <div
+      onClick={() => navigate(`/product/${produto.id}`)}
+      className="cursor-pointer min-w-[200px] max-w-[220px] flex-shrink-0 group relative"
+    >
+      <div className="bg-white border shadow-md overflow-hidden relative">
         <div className="aspect-[3/4] relative">
           <button
-            key={animate ? "animate" : "static"}
             onClick={handleFavorite}
             className={`absolute top-2 right-2 z-10 bg-white rounded-full p-1 shadow hover:scale-110 transition ${
               animate ? "animate-[pingOnce_0.3s_ease-out]" : ""
@@ -95,7 +87,10 @@ export function ProductCard({ produto }: ProductCardProps) {
               {tamanhos.map((size) => (
                 <button
                   key={size}
-                  onClick={() => setSelectedSize(size)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSelectedSize(size)
+                  }}
                   className={`w-8 h-8 border text-sm font-semibold transition ${
                     selectedSize === size
                       ? "bg-black text-white"
