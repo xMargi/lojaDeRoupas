@@ -1,30 +1,33 @@
-// src/components/Header.tsx
-import { useState } from "react"
+import { useState } from "react";
 import {
   ShoppingBag,
   Heart,
   Search,
   User as UserIcon,
   X as CloseIcon,
-} from "lucide-react"
-import { useSearchHeader } from "@/hooks/useSearchHeader"
-import { useUser } from "@/contexts/UserContext"
-import { useCart } from "@/contexts/CartContext"
-import { UserDropdown } from "./UserDropdown"
-import { ShopSubmenu } from "./ShopPopOver"
+} from "lucide-react";
+import { useSearchHeader } from "@/hooks/useSearchHeader";
+import { useUser } from "@/contexts/UserContext";
+import { useCart } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { UserDropdown } from "./UserDropdown";
+import { ShopSubmenu } from "./ShopPopOver";
+import { ProductAside } from "@/components/aside/ProductAside";
 
 export function Header() {
-  const [query, setQuery] = useState("")
-  const { handleSubmit } = useSearchHeader(query, setQuery)
-  const { isLoggedIn, logout } = useUser()
-  const { items: cartItems, addItem, decrementItem, clearCart } = useCart()
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [query, setQuery] = useState("");
+  const { handleSubmit } = useSearchHeader(query, setQuery);
+  const { isLoggedIn, logout } = useUser();
+  const { items: cartItems, addItem, decrementItem, clearCart } = useCart();
+  const { favorites } = useFavorites();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
 
   // calcula o total do carrinho
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
-  )
+  );
 
   return (
     <>
@@ -61,8 +64,24 @@ export function Header() {
               </button>
             </form>
 
-            <Heart size={22} className="hover:scale-110 transition" />
+            {/* Botão de Favoritos */}
+            <button
+              onClick={() => setIsFavoritesOpen(true)}
+              className="relative p-1 hover:scale-110 transition"
+              title="Favoritos"
+            >
+              <Heart
+                size={24}
+                className={`transition text-white`}
+              />
+              {favorites.length > 0 && (
+                <span className="absolute -top-1 -right-2 text-[10px] bg-white text-red-500 rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                  {favorites.length}
+                </span>
+              )}
+            </button>
 
+            {/* Usuário */}
             <div className="flex items-center gap-4">
               {isLoggedIn ? (
                 <>
@@ -76,6 +95,7 @@ export function Header() {
               )}
             </div>
 
+            {/* Carrinho */}
             <button onClick={() => setIsCartOpen(true)} className="relative p-1 hover:scale-110 transition">
               <ShoppingBag size={24} />
               <span className="absolute -top-1 -right-2 text-[11px] bg-white text-black rounded-full w-5 h-5 flex items-center justify-center font-bold">
@@ -86,6 +106,7 @@ export function Header() {
         </div>
       </header>
 
+      {/* Aside do Carrinho */}
       {isCartOpen && (
         <>
           {/* Backdrop */}
@@ -93,7 +114,6 @@ export function Header() {
             className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setIsCartOpen(false)}
           />
-
           {/* Aside */}
           <aside className="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 p-6 flex flex-col">
             <div className="flex items-center justify-between mb-4">
@@ -106,6 +126,7 @@ export function Header() {
               </button>
             </div>
 
+            {/* Itens do Carrinho */}
             {cartItems.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center">
                 <ShoppingBag size={48} className="text-gray-400 mb-4" />
@@ -151,12 +172,10 @@ export function Header() {
 
             {cartItems.length > 0 && (
               <>
-                {/* Total */}
                 <div className="mt-4 border-t pt-4 flex justify-between items-center">
                   <span className="font-semibold">Total</span>
                   <span className="text-lg font-bold">R$ {total.toFixed(2)}</span>
                 </div>
-                {/* Finalizar Pedido */}
                 <button className="mt-4 w-full bg-[#BC9977] text-white py-3 rounded-lg font-semibold hover:bg-[#a9825e] transition">
                   Finalizar Pedido
                 </button>
@@ -165,6 +184,18 @@ export function Header() {
           </aside>
         </>
       )}
+
+      {/* Aside de Favoritos */}
+      {isFavoritesOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsFavoritesOpen(false)}
+          />
+          <ProductAside open={isFavoritesOpen} setOpen={setIsFavoritesOpen} />
+        </>
+      )}
     </>
-  )
+  );
 }

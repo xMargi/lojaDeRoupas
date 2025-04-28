@@ -1,47 +1,50 @@
-// src/components/ProductCard.tsx
-import { useState } from "react"
-import { Heart } from "lucide-react"
-import { useNavigate } from "react-router-dom"
-import { useUser } from "@/contexts/UserContext"
-import { useCart, CartItem } from "@/contexts/CartContext"
-import { Product } from "@/data/products"
+import { useState } from "react";
+import { Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
+import { useCart, CartItem } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext"; // importa favoritos
+import { Product } from "@/data/products";
 
 interface ProductCardProps {
-  produto: Product
+  produto: Product;
 }
 
 export function ProductCard({ produto }: ProductCardProps) {
-  const navigate = useNavigate()
-  const { isLoggedIn } = useUser()
-  const { addItem } = useCart()
+  const navigate = useNavigate();
+  const { isLoggedIn } = useUser();
+  const { addItem } = useCart();
+  const { favorites, addFavorite, removeFavorite } = useFavorites(); // importa favorites aqui também
 
-  const [selectedSize, setSelectedSize] = useState<string | null>(null)
-  const [isFavorited, setIsFavorited] = useState(false)
-  const [animate, setAnimate] = useState(false)
-  const tamanhos = ["P", "M", "G", "GG"]
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [animate, setAnimate] = useState(false);
+  const tamanhos = ["P", "M", "G", "GG"];
+
+  const isFavorited = favorites.some((fav) => fav.id === produto.id); // verificação global
 
   const handleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!isLoggedIn) return navigate("/login")
-    setIsFavorited(!isFavorited)
-    setAnimate(true)
-    setTimeout(() => setAnimate(false), 300)
-  }
+    e.stopPropagation();
+    if (!isLoggedIn) return navigate("/login");
+
+    if (isFavorited) {
+      removeFavorite(produto.id);
+    } else {
+      addFavorite(produto);
+      setAnimate(true);
+      setTimeout(() => setAnimate(false), 300);
+    }
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!isLoggedIn) return navigate("/login")
+    e.stopPropagation();
+    if (!isLoggedIn) return navigate("/login");
     if (!selectedSize) {
-      alert("Selecione um tamanho antes de adicionar.")
-      return
+      alert("Selecione um tamanho antes de adicionar.");
+      return;
     }
     const numericPrice = Number(
-      produto.preco
-        .replace("R$", "")
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .trim()
-    )
+      produto.preco.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()
+    );
     const item: CartItem = {
       id: produto.id,
       name: produto.nome,
@@ -49,9 +52,9 @@ export function ProductCard({ produto }: ProductCardProps) {
       image: produto.imagem,
       size: selectedSize,
       quantity: 1,
-    }
-    addItem(item)
-  }
+    };
+    addItem(item);
+  };
 
   return (
     <div
@@ -88,8 +91,8 @@ export function ProductCard({ produto }: ProductCardProps) {
                 <button
                   key={size}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    setSelectedSize(size)
+                    e.stopPropagation();
+                    setSelectedSize(size);
                   }}
                   className={`w-8 h-8 border text-sm font-semibold transition ${
                     selectedSize === size
@@ -118,5 +121,5 @@ export function ProductCard({ produto }: ProductCardProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

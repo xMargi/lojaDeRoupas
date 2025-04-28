@@ -1,11 +1,11 @@
-// src/pages/ProductDetail.tsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, AlertCircle, Truck, CreditCard } from "lucide-react";
 import { useCart, CartItem } from "@/contexts/CartContext";
 import { PRODUCTS, Product } from "@/data/products";
 import { ProductGallery } from "@/components/carousel/ProductGallery";
+import { ProductInfo } from "@/components/product/ProductInfo";
+import { ProductAside } from "@/components/aside/ProductAside";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -35,8 +35,6 @@ export default function ProductDetail() {
 
   const availableSizes = product.sizes ?? ["P", "M", "G", "GG"];
   const unitPrice = Number(product.preco.replace("R$", "").replace(/\./g, "").replace(",", ".").trim());
-  const totalPrice = unitPrice * quantity;
-  const formattedTotal = totalPrice.toFixed(2).replace(".", ",").replace(/(\d)(?=(\d{3})+,)/g, "$1.");
 
   const showToast = () => {
     setToastVisible(true);
@@ -63,6 +61,9 @@ export default function ProductDetail() {
 
   return (
     <div className="relative">
+      {/* Aside dos favoritos */}
+      <ProductAside open={true} setOpen={() => {}} />
+
       {/* Toast */}
       <AnimatePresence>
         {toastVisible && (
@@ -102,124 +103,20 @@ export default function ProductDetail() {
             />
           </div>
 
-          {/* Painel de Informações */}
-          <div className="flex-1 max-w-[480px] space-y-5">
-            <h1 className="text-2xl font-bold">{product.nome}</h1>
-            <p className="text-sm text-gray-500">ID: {product.id}</p>
-
-            {/* Preço */}
-            <div className="space-y-1">
-              <p className="text-3xl font-semibold text-[#BC9977]">R$ {formattedTotal}</p>
-              <p className="text-base text-gray-700 flex items-center gap-1">
-                <CreditCard size={16} /> no cartão em até 12× de {(unitPrice / 12).toFixed(2).replace('.', ',')} sem juros
-              </p>
-              <button className="text-xs text-[#BC9977] hover:underline transition">
-                + formas de pagamento
-              </button>
-            </div>
-
-            {/* Seleção de Tamanho */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Tamanho:</label>
-              <div className="flex flex-wrap gap-2">
-                {availableSizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={`px-3 py-1 border rounded text-sm transition ${
-                      selectedSize === s
-                        ? "bg-[#BC9977] text-white border-[#BC9977]"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quantidade e Botões */}
-            <div className="flex items-start gap-4">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="px-3 py-1 border rounded-l hover:bg-gray-100 cursor-pointer"
-                >
-                  –
-                </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  readOnly
-                  className="w-16 text-center border-y"
-                />
-                <button
-                  onClick={() => setQuantity(q => q + 1)}
-                  className="px-3 py-1 border rounded-r hover:bg-gray-100 cursor-pointer"
-                >
-                  ＋
-                </button>
-              </div>
-
-              <div className="flex flex-col gap-2 flex-1">
-                <button
-                  onClick={() => {
-                    if (!selectedSize) {
-                      alert("Selecione um tamanho primeiro.");
-                      return;
-                    }
-                    const item: CartItem = {
-                      id: product.id,
-                      name: product.nome,
-                      price: unitPrice,
-                      image: mainImage,
-                      size: selectedSize,
-                      quantity,
-                    };
-                    addItem(item);
-                    showToast();
-                  }}
-                  className="bg-[#BC9977] hover:bg-opacity-90 text-white py-2 rounded transition text-sm cursor-pointer"
-                >
-                  Adicionar ao Carrinho
-                </button>
-                <button
-                  onClick={handleBuyNow}
-                  className="bg-black hover:bg-gray-800 text-white py-2 rounded transition text-sm cursor-pointer"
-                >
-                  Comprar Agora
-                </button>
-              </div>
-            </div>
-
-            {/* Frete Grátis */}
-            <div className="bg-black text-white py-2 px-4 rounded text-center text-sm flex items-center justify-center gap-2">
-              <Truck size={16} /> Frete grátis até 30/04
-            </div>
-
-            {/* Calcular Frete */}
-            <div className="flex items-center gap-2 text-sm">
-              <Truck size={16} /> Calcule o frete:
-              <input
-                type="text"
-                placeholder="00000-000"
-                className="border px-2 py-1 rounded w-24"
-              />
-              <button className="bg-[#BC9977] hover:bg-opacity-90 text-white px-3 py-1 rounded transition cursor-pointer">
-                OK
-              </button>
-            </div>
-
-            {/* Favoritar / Alerta */}
-            <div className="flex gap-4">
-              <button className="flex items-center gap-1 text-sm text-gray-700 hover:text-[#BC9977] cursor-pointer">
-                <Heart size={16} /> Favoritar
-              </button>
-              <button className="flex items-center gap-1 text-sm text-gray-700 hover:text-[#BC9977] cursor-pointer">
-                <AlertCircle size={16} /> Alerta de Preço
-              </button>
-            </div>
-          </div>
+          {/* Informações do Produto */}
+          <ProductInfo
+            product={product}
+            productName={product.nome}
+            productId={product.id}
+            price={unitPrice}
+            discountedPrice={undefined} // Ajustar se quiser trabalhar com desconto
+            availableSizes={availableSizes}
+            selectedSize={selectedSize}
+            setSelectedSize={setSelectedSize}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            handleBuyNow={handleBuyNow}
+          />
 
         </div>
       </div>
