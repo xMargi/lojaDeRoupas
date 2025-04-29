@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { Heart, AlertCircle, Truck, CreditCard } from "lucide-react";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { Product } from "@/data/products";
@@ -30,14 +31,29 @@ export function ProductInfo({
     handleBuyNow,
 }: ProductInfoProps) {
     const cashback = (price * 0.1).toFixed(2).replace(".", ",");
-    const { addFavorite } = useFavorites(); 
+    const { addFavorite } = useFavorites();
+    const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+    const paymentRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (paymentRef.current && !paymentRef.current.contains(event.target as Node)) {
+                setShowPaymentOptions(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="flex flex-col max-w-[480px] space-y-6 text-gray-800 select-none">
             {/* Nome e ID */}
             <div className="space-y-1">
-                <h1 className="text-4xl font-bold text-center">{productName}</h1>
-                <p className="text-sm text-gray-500 text-center">{`#${productId} - ${productName}`}</p>
+                <h1 className="text-4xl font-bold ">{productName}</h1>
+                <p className="text-sm text-gray-500 ">#{productId} - {productName}</p>
             </div>
 
             {/* Preços */}
@@ -54,7 +70,23 @@ export function ProductInfo({
                 <p className="text-sm text-gray-600 flex items-center gap-1">
                     <CreditCard size={16} /> em até 12x de R$ {(price / 12).toFixed(2).replace(".", ",")} sem juros
                 </p>
-                <button className="text-xs text-[#BC9977] hover:underline transition">+ formas de pagamento</button>
+                <div className="relative inline-block" ref={paymentRef}>
+                    <button
+                        onClick={() => setShowPaymentOptions(!showPaymentOptions)}
+                        className="text-xs text-[#BC9977] border border-[#BC9977] px-3 py-1.5 rounded-full font-medium hover:bg-[#BC9977] hover:text-white transition"
+                    >
+                        + formas de pagamento
+                    </button>
+                    {showPaymentOptions && (
+                        <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white border z-10">
+                            <ul className="text-sm text-gray-700 divide-y">
+                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Pix</li>
+                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Cartão de Crédito</li>
+                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Boleto</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Tamanhos */}
