@@ -23,7 +23,6 @@ export function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
 
-  // calcula o total do carrinho
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0

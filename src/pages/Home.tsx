@@ -6,7 +6,6 @@ import { VideoCarrossel } from "../components/VideoCarrossel"
 import { PRODUCTS } from "@/data/products"
 
 export default function Home() {
-  // exibe apenas IDs 1, 2 e 3 no slider de "Camisas"
   const camisas = PRODUCTS.filter(p => ["1", "2", "3", "4", "5", "6", "7",].includes(p.id))
 
   return (

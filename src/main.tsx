@@ -4,7 +4,7 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext';
 import { CartProvider } from './contexts/CartContext';
-import { FavoritesProvider } from './contexts/FavoritesContext'; // importa o FavoritesProvider
+import { FavoritesProvider } from './contexts/FavoritesContext';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <UserProvider>
         <CartProvider>
-          <FavoritesProvider> {/* ADICIONA AQUI */}
+          <FavoritesProvider>
             <App />
           </FavoritesProvider>
         </CartProvider>

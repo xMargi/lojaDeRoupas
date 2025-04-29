@@ -10,30 +10,30 @@ interface VideoItem {
 }
 
 const videos: VideoItem[] = [
-  // {
-  //   titulo: 'Coleção Surpresa',
-  //   videoUrl: '/videos/1.mp4',
-  // },
-  // {
-  //   titulo: 'Boldwear x NFL',
-  //   videoUrl: '/videos/1.mp4',
-  // },
-  // {
-  //   titulo: 'Boldwear x Sprite',
-  //   videoUrl: '/videos/1.mp4',
-  // },
-  // {
-  //   titulo: 'Coleção Surpresa',
-  //   videoUrl: '/videos/1.mp4',
-  // },
-  // {
-  //   titulo: 'Boldwear x NFL',
-  //   videoUrl: '/videos/1.mp4',
-  // },
-  // {
-  //   titulo: 'Boldwear x Sprite',
-  //   videoUrl: '/videos/1.mp4',
-  // },
+  {
+    titulo: 'Coleção Surpresa',
+    videoUrl: '/videos/1.mp4',
+  },
+  {
+    titulo: 'Boldwear x NFL',
+    videoUrl: '/videos/1.mp4',
+  },
+  {
+    titulo: 'Boldwear x Sprite',
+    videoUrl: '/videos/1.mp4',
+  },
+  {
+    titulo: 'Coleção Surpresa',
+    videoUrl: '/videos/1.mp4',
+  },
+  {
+    titulo: 'Boldwear x NFL',
+    videoUrl: '/videos/1.mp4',
+  },
+  {
+    titulo: 'Boldwear x Sprite',
+    videoUrl: '/videos/1.mp4',
+  },
 ]
 
 export function VideoCarrossel() {

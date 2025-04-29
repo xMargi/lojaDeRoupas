@@ -5,7 +5,7 @@ import { useCart, CartItem } from "@/contexts/CartContext";
 import { PRODUCTS, Product } from "@/data/products";
 import { ProductGallery } from "@/components/carousel/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
-import { ProductAside } from "@/components/aside/ProductAside";
+
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -61,8 +61,7 @@ export default function ProductDetail() {
 
   return (
     <div className="relative">
-      {/* Aside dos favoritos */}
-      <ProductAside open={true} setOpen={() => {}} />
+     
 
       {/* Toast */}
       <AnimatePresence>
@@ -109,7 +108,7 @@ export default function ProductDetail() {
             productName={product.nome}
             productId={product.id}
             price={unitPrice}
-            discountedPrice={undefined} // Ajustar se quiser trabalhar com desconto
+            discountedPrice={undefined} 
             availableSizes={availableSizes}
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}

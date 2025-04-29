@@ -14,13 +14,13 @@ export function ProductCard({ produto }: ProductCardProps) {
   const navigate = useNavigate();
   const { isLoggedIn } = useUser();
   const { addItem } = useCart();
-  const { favorites, addFavorite, removeFavorite } = useFavorites(); // importa favorites aqui também
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [animate, setAnimate] = useState(false);
   const tamanhos = ["P", "M", "G", "GG"];
 
-  const isFavorited = favorites.some((fav) => fav.id === produto.id); // verificação global
+  const isFavorited = favorites.some((fav) => fav.id === produto.id);
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();

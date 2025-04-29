@@ -30,7 +30,7 @@ export function ProductInfo({
     handleBuyNow,
 }: ProductInfoProps) {
     const cashback = (price * 0.1).toFixed(2).replace(".", ",");
-    const { addFavorite } = useFavorites(); // Hook dos favoritos
+    const { addFavorite } = useFavorites(); 
 
     return (
         <div className="flex flex-col max-w-[480px] space-y-6 text-gray-800 select-none">

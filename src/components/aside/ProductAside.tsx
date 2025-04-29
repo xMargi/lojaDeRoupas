@@ -1,7 +1,7 @@
 import { Heart, X, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFavorites } from "@/contexts/FavoritesContext";
-import { Link } from "react-router-dom"; // importa o Link
+import { Link } from "react-router-dom";
 
 interface ProductAsideProps {
     open: boolean;
@@ -62,7 +62,7 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
                       <Link
                         to={`/product/${product.id}`}
                         className="flex items-center gap-3 flex-1"
-                        onClick={() => setOpen(false)} // fechar aside ao clicar
+                        onClick={() => setOpen(false)} 
                       >
                         <img
                           src={product.imagem}
