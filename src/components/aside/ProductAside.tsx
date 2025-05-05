@@ -18,10 +18,10 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
       <div className="fixed bottom-6 right-6 z-40 select-none">
         <button
           onClick={() => setOpen(true)}
-          className="bg-white shadow-lg rounded-full p-4 hover:bg-[#BC9977] transition"
+          className="bg-white shadow-lg rounded-full p-4 hover:bg-[#09122C] transition"
           title="Favoritos"
         >
-          <Heart className="text-[#BC9977] hover:text-white transition" size={28} />
+          <Heart className="text-[#09122C] hover:text-white transition" size={28} />
         </button>
       </div>
 
@@ -38,7 +38,7 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
             {/* Botão Fechar */}
             <button
               onClick={() => setOpen(false)}
-              className="ml-auto text-gray-500 hover:text-[#BC9977] transition"
+              className="ml-auto text-gray-500 hover:text-[#09122C] transition"
             >
               <X size={24} />
             </button>

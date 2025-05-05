@@ -107,7 +107,7 @@ export function CategoryProductCard({ produto }: CategoryProductCardProps) {
 
       <div className="p-4 text-center">
         <h3 className="text-base font-semibold">{produto.nome}</h3>
-        <p className="text-base text-[#BC9977] font-medium">{produto.preco}</p>
+        <p className="text-base text-[#09122C] font-medium">{produto.preco}</p>
       </div>
     </div>
   )

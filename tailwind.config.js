@@ -1,3 +1,5 @@
+
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -6,9 +8,6 @@ module.exports = {
     ],
     theme: {
       extend: {
-        fontFamily: {
-          sans: ['Outfit', 'sans-serif'],
-        },
         animation: {
           pingOnce: 'pingOnce 0.3s ease-out',
         },

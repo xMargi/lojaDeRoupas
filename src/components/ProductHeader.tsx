@@ -22,7 +22,7 @@ export function ProductHeader() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-6 py-4 bg-[#BC9977] shadow-md">
+      <header className="flex items-center justify-between px-6 py-4 bg-[#09122C] shadow-md">
         <div className="w-10" />
 
         <Link to="/" className="mx-auto">
@@ -117,7 +117,7 @@ export function ProductHeader() {
                       <p className="text-sm text-gray-600">
                         Tamanho: {item.size}
                       </p>
-                      <p className="text-sm font-medium text-[#BC9977]">
+                      <p className="text-sm font-medium text-[#09122C]">
                         R$ {item.price.toFixed(2)}
                       </p>
                     </div>
@@ -153,7 +153,7 @@ export function ProductHeader() {
                     R$ {total.toFixed(2)}
                   </span>
                 </div>
-                <button className="mt-4 w-full bg-[#BC9977] text-white py-3 rounded-lg font-semibold hover:bg-[#a9825e] transition">
+                <button className="mt-4 w-full bg-[#09122C] text-white py-3 rounded-lg font-semibold hover:bg-[#a9825e] transition">
                   Finalizar Pedido
                 </button>
               </>

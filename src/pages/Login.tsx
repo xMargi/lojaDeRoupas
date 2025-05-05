@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useUser } from "@/contexts/UserContext"
+import { AxiosError } from "axios"
 
 export default function Login() {
   const navigate = useNavigate()
@@ -13,15 +14,29 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       setError("Preencha todos os campos para continuar.")
       return
     }
+
+    setLoading(true)
     setError("")
-    login()           // atualiza o contexto e persiste no localStorage
-    navigate("/")     // manda pra home
+
+    try {
+      await login(email, password)
+      navigate("/")
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>
+      const msg =
+        error.response?.data?.message ||
+        "Erro ao fazer login. Verifique suas credenciais."
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -32,9 +47,9 @@ export default function Login() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-md"
       >
-        <Card className="rounded-2xl border border-[#BC9977] shadow-[0_0_20px_rgba(188,153,119,0.15)] bg-white p-6">
+        <Card className="rounded-2xl border border-[#09122C] shadow-[0_0_20px_rgba(188,153,119,0.15)] bg-white p-6">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-[#BC9977]">
+            <CardTitle className="text-2xl font-bold text-[#09122C]">
               Entrar
             </CardTitle>
           </CardHeader>
@@ -48,7 +63,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
             <div className="space-y-2">
@@ -60,7 +75,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
 
@@ -70,16 +85,17 @@ export default function Login() {
 
             <Button
               onClick={handleLogin}
-              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
+              disabled={loading}
+              className="w-full bg-[#09122C] hover:bg-[#000000] text-white transition-all duration-200"
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
               Não tem uma conta?{" "}
               <Link
                 to="/register"
-                className="text-[#BC9977] underline hover:text-[#a9825e] transition-colors"
+                className="text-[#09122C] underline hover:text-[#000000] transition-colors"
               >
                 Criar Conta
               </Link>

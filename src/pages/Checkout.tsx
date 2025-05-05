@@ -36,30 +36,30 @@ export default function Checkout() {
         <div className="lg:col-span-2 space-y-6">
           {/* Identificação */}
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-[#BC9977]">1. Identifique-se</h2>
+            <h2 className="text-lg font-semibold text-[#09122C]">1. Identifique-se</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <input name="nome" placeholder="Nome completo" value={address.nome} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="email" placeholder="E-mail" value={address.email} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="celular" placeholder="Celular / WhatsApp" value={address.celular} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
+              <input name="nome" placeholder="Nome completo" value={address.nome} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="email" placeholder="E-mail" value={address.email} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="celular" placeholder="Celular / WhatsApp" value={address.celular} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
             </div>
           </div>
 
           {/* Entrega */}
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-[#BC9977]">2. Entrega</h2>
+            <h2 className="text-lg font-semibold text-[#09122C]">2. Entrega</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="cep" placeholder="CEP" value={address.cep} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="rua" placeholder="Rua" value={address.rua} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="numero" placeholder="Número" value={address.numero} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="bairro" placeholder="Bairro" value={address.bairro} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="cidade" placeholder="Cidade" value={address.cidade} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
-              <input name="estado" placeholder="UF" value={address.estado} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#BC9977] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#BC9977] transition placeholder:text-gray-400" />
+              <input name="cep" placeholder="CEP" value={address.cep} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="rua" placeholder="Rua" value={address.rua} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="numero" placeholder="Número" value={address.numero} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="bairro" placeholder="Bairro" value={address.bairro} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="cidade" placeholder="Cidade" value={address.cidade} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
+              <input name="estado" placeholder="UF" value={address.estado} onChange={handleInputChange} className="w-full px-4 py-2 border border-[#09122C] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#09122C] transition placeholder:text-gray-400" />
             </div>
           </div>
 
           {/* Pagamento */}
           <div className="bg-white rounded-xl shadow p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-[#BC9977]">3. Pagamento</h2>
+            <h2 className="text-lg font-semibold text-[#09122C]">3. Pagamento</h2>
             <div className="flex gap-4">
               {(["pix", "card", "boleto"] as const).map((method) => (
                 <button
@@ -70,7 +70,7 @@ export default function Checkout() {
                   }}
                   className={`px-4 py-2 rounded border w-full font-medium transition
                     ${paymentMethod === method
-                      ? "bg-[#BC9977] text-white border-[#BC9977]"
+                      ? "bg-[#09122C] text-white border-[#09122C]"
                       : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
                 >
                   {{ pix: "Pix", card: "Cartão de Crédito", boleto: "Boleto" }[method]}
@@ -82,7 +82,7 @@ export default function Checkout() {
 
         {/* Resumo */}
         <div className="bg-white rounded-xl shadow p-6 space-y-6">
-          <h2 className="text-lg font-semibold text-[#BC9977]">RESUMO</h2>
+          <h2 className="text-lg font-semibold text-[#09122C]">RESUMO</h2>
 
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
@@ -108,11 +108,11 @@ export default function Checkout() {
                   <p className="text-xs text-gray-500">Tamanho: {item.size} | Qtd: {item.quantity}</p>
                 </div>
               </div>
-              <p className="text-sm font-bold text-[#BC9977]">R$ {(item.price * item.quantity).toFixed(2)}</p>
+              <p className="text-sm font-bold text-[#09122C]">R$ {(item.price * item.quantity).toFixed(2)}</p>
             </div>
           ))}
 
-          <button className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white py-3 rounded-lg font-semibold transition">
+          <button className="w-full bg-[#09122C] hover:bg-[#a9825e] text-white py-3 rounded-lg font-semibold transition">
             Finalizar Pedido
           </button>
         </div>

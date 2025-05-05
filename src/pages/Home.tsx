@@ -21,7 +21,7 @@ export default function Home() {
       />
 
       <div className="w-full px-6">
-        <div className="h-[2px] bg-gradient-to-r from-[#BC9977] to-[#f5f5f5]" />
+        <div className="h-[2px] bg-gradient-to-r from-[#09122C] to-[#f5f5f5]" />
       </div>
 
       <VideoCarrossel />

@@ -19,7 +19,7 @@ export function ShopSubmenu() {
                         animate={{ height: 470, opacity: 1, left: -675 }}
                         exit={{ height: 0, opacity: 0, }}
                         transition={{ duration: 0.1 }}
-                        className="absolute left-0 top-full w-screen bg-[#BC9977] overflow-hidden z-50"
+                        className="absolute left-0 top-full w-screen bg-[#09122C] overflow-hidden z-50"
                     >
                         <div className="flex h-full">
                             {/* Lado esquerdo - categorias */}

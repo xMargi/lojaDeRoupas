@@ -3,7 +3,7 @@ import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import { useCart, CartItem } from "@/contexts/CartContext";
-import { useFavorites } from "@/contexts/FavoritesContext"; // importa favoritos
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -42,17 +42,20 @@ export function ProductCard({ produto }: ProductCardProps) {
       alert("Selecione um tamanho antes de adicionar.");
       return;
     }
+
     const numericPrice = Number(
       produto.preco.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()
     );
+
     const item: CartItem = {
-      id: produto.id,
-      name: produto.nome,
+      id: Number(produto.id),
+      title: produto.nome,
       price: numericPrice,
       image: produto.imagem,
       size: selectedSize,
       quantity: 1,
     };
+
     addItem(item);
   };
 
@@ -115,7 +118,7 @@ export function ProductCard({ produto }: ProductCardProps) {
 
         <div className="p-3 text-center">
           <h3 className="text-sm font-semibold">{produto.nome}</h3>
-          <p className="text-sm text-[#BC9977] font-medium">
+          <p className="text-sm text-[#09122C] font-medium">
             {produto.preco}
           </p>
         </div>

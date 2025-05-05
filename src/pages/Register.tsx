@@ -6,34 +6,52 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useUser } from "@/contexts/UserContext"
+import { AxiosError } from "axios"
 
 export default function Register() {
   const navigate = useNavigate()
-  const { login } = useUser()
+  const { register } = useUser()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
       setError("Preencha todos os campos para continuar.")
       return
     }
+
     if (!validateEmail(email)) {
       setError("Informe um e-mail válido.")
       return
     }
+
     if (password !== confirmPassword) {
       setError("As senhas não coincidem.")
       return
     }
+
+    setLoading(true)
     setError("")
-    login()          // registra como logado
-    navigate("/")    // manda pra home
+
+    try {
+      await register(name, email, password)
+      navigate("/")
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>
+      const msg =
+        error.response?.data?.message ||
+        "Erro ao criar conta. Tente novamente."
+      setError(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -44,9 +62,9 @@ export default function Register() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-md"
       >
-        <Card className="rounded-2xl border border-[#BC9977] shadow-[0_0_20px_rgba(188,153,119,0.15)] bg-white p-6">
+        <Card className="rounded-2xl border border-[#09122C] shadow-[0_0_20px_rgba(188,153,119,0.15)] bg-white p-6">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-[#BC9977]">
+            <CardTitle className="text-2xl font-bold text-[#09122C]">
               Criar Conta
             </CardTitle>
           </CardHeader>
@@ -60,7 +78,7 @@ export default function Register() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
             <div className="space-y-2">
@@ -72,7 +90,7 @@ export default function Register() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
             <div className="space-y-2">
@@ -84,7 +102,7 @@ export default function Register() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
             <div className="space-y-2">
@@ -96,7 +114,7 @@ export default function Register() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="focus-visible:ring-[#BC9977] transition duration-200"
+                className="focus-visible:ring-[#09122C] transition duration-200"
               />
             </div>
 
@@ -106,16 +124,17 @@ export default function Register() {
 
             <Button
               onClick={handleRegister}
-              className="w-full bg-[#BC9977] hover:bg-[#a9825e] text-white transition-all duration-200"
+              disabled={loading}
+              className="w-full bg-[#09122C] hover:bg-[#000000] text-white transition-all duration-200"
             >
-              Criar Conta
+              {loading ? "Criando conta..." : "Criar Conta"}
             </Button>
 
             <p className="text-sm text-center text-muted-foreground">
               Já tem uma conta?{" "}
               <Link
                 to="/login"
-                className="text-[#BC9977] underline hover:text-[#a9825e] transition-colors"
+                className="text-[#09122C] underline hover:text-[#000000] transition-colors"
               >
                 Entrar
               </Link>

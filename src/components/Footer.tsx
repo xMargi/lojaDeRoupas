@@ -2,7 +2,7 @@
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#BC9977] text-white px-6 py-12">
+    <footer className="w-full bg-[#09122C] text-white px-6 py-12">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 text-sm">
 
         {/* Newsletter */}
@@ -23,7 +23,7 @@ export function Footer() {
             />
             <button
               type="submit"
-              className="w-full mt-4 bg-white text-[#BC9977] py-2 rounded-md font-semibold hover:opacity-90 transition"
+              className="w-full mt-4 bg-white text-[#09122C] py-2 rounded-md font-semibold hover:opacity-90 transition"
             >
               Inscrever-se
             </button>
@@ -107,7 +107,7 @@ export function Footer() {
           <img src="/icons/pix.svg" alt="Pix" className="h-6 filter invert" />
         </div>
         <p className="text-xs opacity-80">
-          © {new Date().getFullYear()} BW BoldWear Company LTDA • CNPJ 55.380.250/0002-77
+          © {new Date().getFullYear()} BW BoldWear Company LTDA • CNPJ 60.615.601/0001-30
         </p>
       </div>
     </footer>

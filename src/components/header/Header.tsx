@@ -30,7 +30,7 @@ export function Header() {
 
   return (
     <>
-      <header className="absolute top-0 left-0 w-full px-6 py-4 z-50 bg-transparent hover:bg-[#BC9977] transition-colors duration-300">
+      <header className="absolute top-0 left-0 w-full px-6 py-4 z-50 bg-transparent hover:bg-[#09122C] transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <div className="h-8 md:h-10 flex items-center">
@@ -44,7 +44,7 @@ export function Header() {
           {/* Menu */}
           <nav className="hidden md:flex gap-6 text-white text-base uppercase items-center">
             <ShopSubmenu />
-            <a href="#" className="hover:underline">Collections</a>
+            <a href="#" className="hover:underline font-oswald">Collections</a>
             <a href="#" className="text-red-500 font-semibold hover:underline">Sale</a>
           </nav>
 

@@ -1,53 +1,89 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Product } from "@/data/products";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Product } from "@/data/products"
+import { useUser } from "@/contexts/UserContext"
+import axios from "axios"
 
 interface FavoritesContextType {
-  favorites: Product[];
-  addFavorite: (product: Product) => void;
-  removeFavorite: (productId: string) => void;
+  favorites: Product[]
+  addFavorite: (product: Product) => void
+  removeFavorite: (productId: string) => void
 }
 
-const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
+const FavoritesContext = createContext<FavoritesContextType | undefined>(
+  undefined
+)
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<Product[]>(() => {
-    const stored = localStorage.getItem("favorites");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const { isLoggedIn, user } = useUser()
+  const [favorites, setFavorites] = useState<Product[]>([])
+  const [toast, setToast] = useState<{
+    message: string
+    type: "success" | "error"
+  } | null>(null)
 
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const api = axios.create({
+    baseURL: "http://localhost:3333",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
 
+  // Carrega favoritos ao logar
   useEffect(() => {
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-  }, [favorites]);
+    if (isLoggedIn && user) {
+      api
+        .get("/favorites")
+        .then((res) => {
+          const validProducts = res.data.filter(
+            (p: Product | null) => p !== null
+          );
+          setFavorites(validProducts);
+        })
+        .catch(() => setFavorites([]));
+    } else {
+      setFavorites([]);
+    }
+  }, [isLoggedIn, user]);
 
   function showToast(message: string, type: "success" | "error") {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000)
   }
 
-  function addFavorite(product: Product) {
-    setFavorites((prev) => {
-      const alreadyFavorited = prev.some((item) => item.id === product.id);
-      if (alreadyFavorited) return prev;
-      showToast("Produto adicionado aos favoritos!", "success");
-      return [...prev, product];
-    });
+  async function addFavorite(product: Product) {
+    try {
+      await api.post(`/favorites/${product.id}`)
+      setFavorites((prev) => {
+        if (prev.some((p) => p.id === product.id)) return prev
+        return [...prev, product]
+      })
+      showToast("Produto adicionado aos favoritos!", "success")
+    } catch {
+      showToast("Erro ao adicionar aos favoritos", "error")
+    }
   }
 
-  function removeFavorite(productId: string) {
-    setFavorites((prev) => {
-      const updated = prev.filter((item) => item.id !== productId);
-      if (updated.length < prev.length) {
-        showToast("Produto removido dos favoritos.", "error");
-      }
-      return updated;
-    });
+  async function removeFavorite(productId: string) {
+    try {
+      await api.delete(`/favorites/${productId}`)
+      setFavorites((prev) => prev.filter((p) => p.id !== productId))
+      showToast("Produto removido dos favoritos", "error")
+    } catch {
+      showToast("Erro ao remover dos favoritos", "error")
+    }
   }
 
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite }}>
+    <FavoritesContext.Provider
+      value={{ favorites, addFavorite, removeFavorite }}
+    >
       {children}
       <AnimatePresence>
         {toast && (
@@ -66,13 +102,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         )}
       </AnimatePresence>
     </FavoritesContext.Provider>
-  );
+  )
 }
 
 export function useFavorites() {
-  const context = useContext(FavoritesContext);
+  const context = useContext(FavoritesContext)
   if (!context) {
-    throw new Error("useFavorites deve ser usado dentro de FavoritesProvider");
+    throw new Error("useFavorites deve ser usado dentro de FavoritesProvider")
   }
-  return context;
+  return context
 }

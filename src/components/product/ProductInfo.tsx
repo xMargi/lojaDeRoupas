@@ -15,6 +15,7 @@ interface ProductInfoProps {
     quantity: number;
     setQuantity: (q: number) => void;
     handleBuyNow: () => void;
+    scrollToTable: () => void;
 }
 
 export function ProductInfo({
@@ -29,6 +30,7 @@ export function ProductInfo({
     quantity,
     setQuantity,
     handleBuyNow,
+    scrollToTable,
 }: ProductInfoProps) {
     const cashback = (price * 0.1).toFixed(2).replace(".", ",");
     const { addFavorite } = useFavorites();
@@ -61,11 +63,11 @@ export function ProductInfo({
                 {discountedPrice ? (
                     <div className="flex items-center gap-2">
                         <p className="line-through text-gray-400 text-xl">de R$ {price.toFixed(2).replace(".", ",")}</p>
-                        <p className="text-[#BC9977] font-semibold text-xl">R$ {discountedPrice.toFixed(2).replace(".", ",")}</p>
-                        <span className="bg-[#BC9977] text-white text-xs px-2 py-0.5 rounded">-34%</span>
+                        <p className="text-[#09122C] font-semibold text-xl">R$ {discountedPrice.toFixed(2).replace(".", ",")}</p>
+                        <span className="bg-[#09122C] text-white text-xs px-2 py-0.5 rounded">-34%</span>
                     </div>
                 ) : (
-                    <p className="text-[#BC9977] font-semibold text-2xl">R$ {price.toFixed(2).replace(".", ",")}</p>
+                    <p className="text-[#09122C] font-semibold text-2xl">R$ {price.toFixed(2).replace(".", ",")}</p>
                 )}
                 <p className="text-sm text-gray-600 flex items-center gap-1">
                     <CreditCard size={16} /> em até 12x de R$ {(price / 12).toFixed(2).replace(".", ",")} sem juros
@@ -73,16 +75,16 @@ export function ProductInfo({
                 <div className="relative inline-block" ref={paymentRef}>
                     <button
                         onClick={() => setShowPaymentOptions(!showPaymentOptions)}
-                        className="text-xs text-[#BC9977] border border-[#BC9977] px-3 py-1.5 rounded-full font-medium hover:bg-[#BC9977] hover:text-white transition"
+                        className="text-xs text-[#09122C] border border-[#09122C] px-3 py-1.5 rounded-full font-medium hover:bg-[#09122C] hover:text-white transition"
                     >
                         + formas de pagamento
                     </button>
                     {showPaymentOptions && (
                         <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white border z-10">
                             <ul className="text-sm text-gray-700 divide-y">
-                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Pix</li>
-                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Cartão de Crédito</li>
-                                <li className="px-4 py-2 hover:bg-[#BC9977] hover:text-white cursor-pointer">Boleto</li>
+                                <li className="px-4 py-2 hover:bg-[#09122C] hover:text-white cursor-pointer">Pix</li>
+                                <li className="px-4 py-2 hover:bg-[#09122C] hover:text-white cursor-pointer">Cartão de Crédito</li>
+                                <li className="px-4 py-2 hover:bg-[#09122C] hover:text-white cursor-pointer">Boleto</li>
                             </ul>
                         </div>
                     )}
@@ -99,7 +101,7 @@ export function ProductInfo({
                             onClick={() => setSelectedSize(size)}
                             className={`px-3 py-1 border rounded text-sm transition ${
                                 selectedSize === size
-                                    ? "bg-[#BC9977] text-white border-[#BC9977]"
+                                    ? "bg-[#09122C] text-white border-[#09122C]"
                                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                             }`}
                         >
@@ -110,14 +112,17 @@ export function ProductInfo({
             </div>
 
             {/* Botão Tabela de Medidas */}
-            <button className="w-full border rounded py-2 font-medium hover:bg-gray-100 transition">
+            <button
+                className="w-full border rounded py-2 font-medium hover:bg-gray-100 transition"
+                onClick={scrollToTable}
+            >
                 Tabela de Medidas
             </button>
 
             {/* Cashback */}
             <div className="bg-gray-100 rounded p-3 text-center text-sm">
                 <p>Receba até:</p>
-                <p className="text-[#BC9977] font-bold">R$ {cashback} de cashback</p>
+                <p className="text-[#09122C] font-bold">R$ {cashback} de cashback</p>
             </div>
 
             {/* Garantia */}
@@ -156,7 +161,7 @@ export function ProductInfo({
 
                 <button
                     onClick={handleBuyNow}
-                    className="flex-1 bg-[#BC9977] hover:bg-opacity-90 text-white font-bold py-2 rounded transition"
+                    className="flex-1 bg-[#09122C] hover:bg-opacity-90 text-white font-bold py-2 rounded transition"
                 >
                     COMPRAR
                 </button>
@@ -166,11 +171,11 @@ export function ProductInfo({
             <div className="flex gap-4">
                 <button
                     onClick={() => addFavorite(product)}
-                    className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#BC9977] transition"
+                    className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#09122C] transition"
                 >
                     <Heart size={16} /> Adicionar aos favoritos
                 </button>
-                <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#BC9977] transition">
+                <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-[#09122C] transition">
                     <AlertCircle size={16} /> Criar alerta de preço
                 </button>
             </div>
@@ -188,7 +193,7 @@ export function ProductInfo({
                     placeholder="00000-000"
                     className="border px-2 py-1 rounded w-24"
                 />
-                <button className="bg-[#BC9977] hover:bg-opacity-90 text-white px-3 py-1 rounded transition">
+                <button className="bg-[#09122C] hover:bg-opacity-90 text-white px-3 py-1 rounded transition">
                     OK
                 </button>
             </div>

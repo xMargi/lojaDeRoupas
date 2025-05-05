@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart, CartItem } from "@/contexts/CartContext";
-import { PRODUCTS, Product } from "@/data/products";
+import { Product } from "@/data/products";
 import { ProductGallery } from "@/components/carousel/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
-
+import { ProductDescription } from "@/components/product/ProductDescription";
+import axios from "axios";
+import { ProductFromAPI } from "@/types/api"; // importa tipo certo
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -18,17 +20,36 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState<number>(1);
   const [toastVisible, setToastVisible] = useState(false);
 
+  const tableRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const found = PRODUCTS.find((p) => p.id === id);
-    if (!found) {
-      navigate("/");
-      return;
-    }
-    setProduct(found);
-    setMainImage(found.imagem);
-    if (found.sizes && found.sizes.length > 0) {
-      setSelectedSize(found.sizes[0]);
-    }
+    if (!id) return;
+
+    axios
+      .get(`http://localhost:3333/products/${id}`)
+      .then((res) => {
+        const data: ProductFromAPI = res.data.product;
+
+        // Mapeia para o formato do frontend
+        const parsedProduct: Product = {
+          id: String(data.id),
+          nome: data.name,
+          preco: `R$ ${data.price.toFixed(2).replace(".", ",")}`,
+          imagem: data.imagePath,
+          images: [data.imagePath],
+          sizes: ["P", "M", "G", "GG"],
+          description: data.description,
+        };
+
+        setProduct(parsedProduct);
+        setMainImage(parsedProduct.imagem);
+        if (parsedProduct.sizes && parsedProduct.sizes.length > 0) {
+          setSelectedSize(parsedProduct.sizes[0]);
+        }
+      })
+      .catch(() => {
+        navigate("/");
+      });
   }, [id, navigate]);
 
   if (!product) return null;
@@ -47,8 +68,8 @@ export default function ProductDetail() {
       return;
     }
     const item: CartItem = {
-      id: product.id,
-      name: product.nome,
+      id: +product.id,
+      title: product.nome,
       price: unitPrice,
       image: mainImage,
       size: selectedSize,
@@ -59,10 +80,14 @@ export default function ProductDetail() {
     navigate("/checkout");
   };
 
+  const scrollToTable = () => {
+    if (tableRef.current) {
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="relative">
-     
-
       {/* Toast */}
       <AnimatePresence>
         {toastVisible && (
@@ -72,7 +97,7 @@ export default function ProductDetail() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -50, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-0 left-1/2 transform -translate-x-1/2 bg-[#BC9977] text-white px-6 py-3 rounded-b shadow-lg z-50"
+            className="fixed top-0 left-1/2 transform -translate-x-1/2 bg-[#09122C] text-white px-6 py-3 rounded-b shadow-lg z-50"
           >
             Produto adicionado ao carrinho
           </motion.div>
@@ -81,15 +106,8 @@ export default function ProductDetail() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
+          <ProductGallery images={product.images ?? []} mainImage={mainImage} setMainImage={setMainImage} />
 
-          {/* Galeria de Miniaturas */}
-          <ProductGallery
-            images={product.images ?? []}
-            mainImage={mainImage}
-            setMainImage={setMainImage}
-          />
-
-          {/* Imagem Principal */}
           <div className="flex justify-center max-w-[600px] w-full">
             <motion.img
               key={mainImage}
@@ -102,21 +120,24 @@ export default function ProductDetail() {
             />
           </div>
 
-          {/* Informações do Produto */}
           <ProductInfo
             product={product}
-            productName={product.nome}
             productId={product.id}
+            productName={product.nome}
             price={unitPrice}
-            discountedPrice={undefined} 
+            discountedPrice={undefined}
             availableSizes={availableSizes}
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}
             quantity={quantity}
             setQuantity={setQuantity}
             handleBuyNow={handleBuyNow}
+            scrollToTable={scrollToTable}
           />
+        </div>
 
+        <div className="mt-12">
+          <ProductDescription tableRef={tableRef} />
         </div>
       </div>
     </div>

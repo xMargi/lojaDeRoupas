@@ -17,7 +17,7 @@ interface BannerProps {
   }: BannerProps) {
     return (
       <section
-        className="relative w-full h-[90vh] bg-cover bg-top flex items-center justify-center text-white pt-28 font-sans"
+        className="relative w-full h-[90vh] bg-cover bg-top flex items-center justify-center text-white pt-28 font-playfair"
         style={{ backgroundImage: `url('${src}')` }}
       >
         <div className="text-center px-4 text-white drop-shadow-lg">

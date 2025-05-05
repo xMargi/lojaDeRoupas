@@ -33,13 +33,13 @@ export function UserDropdown() {
         <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg z-50 text-sm text-[#000000]">
           <button
             onClick={() => navigate("/login")}
-            className="w-full text-left px-4 py-2 hover:bg-[#BC9977] hover:text-white transition"
+            className="w-full text-left px-4 py-2 hover:bg-[#09122C] hover:text-white transition"
           >
             Entrar
           </button>
           <button
             onClick={() => navigate("/register")}
-            className="w-full text-left px-4 py-2 hover:bg-[#BC9977] hover:text-white transition"
+            className="w-full text-left px-4 py-2 hover:bg-[#09122C] hover:text-white transition"
           >
             Criar conta
           </button>
