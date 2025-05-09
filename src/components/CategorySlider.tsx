@@ -1,20 +1,24 @@
-// src/components/CategorySlider.tsx
+import { useCallback, useEffect, useState } from "react"
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-import { Product } from "@/data/products"
+import axios from "axios"
+
 import { CategoryProductCard } from "./CategoryProductCard"
+import type { Product } from "@/types/product";
+import { ProductFromAPI } from "@/types/api"
 
 interface CategorySliderProps {
-  title: string
-  items: Product[]
-  id?: string
+  title: string;
+  id?: string;
+  items: Product[]; 
 }
-
-export function CategorySlider({ title, items, id }: CategorySliderProps) {
+export function CategorySlider({ title, id }: CategorySliderProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" })
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
+  const [items, setItems] = useState<Product[]>([])
+
+  const baseUrl = import.meta.env.VITE_API_URL
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
@@ -27,6 +31,21 @@ export function CategorySlider({ title, items, id }: CategorySliderProps) {
     onSelect()
     emblaApi.on("select", onSelect)
   }, [emblaApi, onSelect])
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/products`).then((res) => {
+      const parsed = (res.data.products as ProductFromAPI[]).map((p) => ({
+        id: String(p.id),
+        nome: p.name,
+        preco: `R$ ${p.price.toFixed(2).replace(".", ",")}`,
+        imagem: p.imagePath,
+        images: [p.imagePath],
+        sizes: ["P", "M", "G", "GG"],
+        description: p.description,
+      }))
+      setItems(parsed)
+    })
+  }, [baseUrl])
 
   return (
     <section id={id} className="w-full px-4 md:px-8 py-14">

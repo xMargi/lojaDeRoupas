@@ -8,6 +8,7 @@ import {
 } from "react"
 import axios from "axios"
 import { useUser } from "./UserContext"
+
 export interface CartItem {
   id: number;
   title: string;
@@ -32,8 +33,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const { isLoggedIn } = useUser()
   const [items, setItems] = useState<CartItem[]>([])
 
+  const baseUrl = import.meta.env.VITE_API_URL
+
   const api = axios.create({
-    baseURL: "http://localhost:3333",
+    baseURL: baseUrl,
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -55,9 +58,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
             quantity: number;
           }) => ({
             id: item.productId,
-            name: item.product.name,
+            title: item.product.name,
             price: item.product.price,
-            image: item.product.imagePath,
+            image: `${baseUrl}${item.product.imagePath.startsWith("/") ? "" : "/"}${item.product.imagePath}`,
             size: item.size,
             quantity: item.quantity,
           }))
@@ -68,48 +71,80 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems([])
     }
   }, [isLoggedIn])
-  
 
   function addItem(newItem: CartItem) {
+    const baseUrl = import.meta.env.VITE_API_URL;
+  
+    const imageUrl = newItem.image.startsWith("http")
+      ? newItem.image
+      : `${baseUrl}${newItem.image.startsWith("/") ? "" : "/"}${newItem.image}`;
+  
+    const newItemWithUrl = { ...newItem, image: imageUrl };
+  
     setItems((old) => {
       const exists = old.find(
         (i) => i.id === newItem.id && i.size === newItem.size
-      )
+      );
+  
       if (exists) {
         return old.map((i) =>
           i.id === newItem.id && i.size === newItem.size
             ? { ...i, quantity: i.quantity + newItem.quantity }
             : i
-        )
+        );
       }
-      return [...old, newItem]
-    })
-
+  
+      return [...old, newItemWithUrl];
+    });
+  
     api.post("/cart", {
       productId: newItem.id,
       quantity: newItem.quantity,
       size: newItem.size,
-    })
+    });
   }
+  
 
   function decrementItem(id: number, size: string) {
-    setItems((old) =>
-      old
-        .map((i) =>
+    setItems((old) => {
+      const item = old.find((i) => i.id === id && i.size === size);
+      if (!item) return old;
+  
+      if (item.quantity > 1) {
+        const updated = old.map((i) =>
           i.id === id && i.size === size
             ? { ...i, quantity: i.quantity - 1 }
             : i
-        )
-        .filter((i) => i.quantity > 0)
-    )
+        );
+  
+        api.put(`/cart/${item.id}`, {
+          quantity: item.quantity - 1,
+          size: item.size,
+        });
+  
+        return updated;
+      } else {
+        // quantidade 1 → remover
+        api.delete("/cart", {
+          data: { productId: id, size },
+        });
+  
+        return old.filter((i) => !(i.id === id && i.size === size));
+      }
+    });
   }
 
   function removeItem(id: number, size: string) {
-    setItems((old) => old.filter((i) => !(i.id === id && i.size === size)))
+    setItems((old) => old.filter((i) => !(i.id === id && i.size === size)));
+  
+    api.delete("/cart", {
+      data: { productId: id, size },
+    });
   }
 
   function clearCart() {
-    setItems([])
+    setItems([]);
+    api.delete("/cart/all");
   }
 
   const total = items.reduce(

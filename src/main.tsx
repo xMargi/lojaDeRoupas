@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './contexts/UserContext';
 import { CartProvider } from './contexts/CartContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
+import { Toaster } from 'sonner'; // ✅ Importa o Toaster
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -14,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <CartProvider>
           <FavoritesProvider>
             <App />
+            <Toaster richColors position="top-center" />
           </FavoritesProvider>
         </CartProvider>
       </UserProvider>

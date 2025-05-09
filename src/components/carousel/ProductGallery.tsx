@@ -2,24 +2,22 @@ import { useRef } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface ProductGalleryProps {
-  images: string[];
+  images: { url: string }[]; 
   mainImage: string;
   setMainImage: (img: string) => void;
 }
+
+const baseUrl = import.meta.env.VITE_API_URL;
 
 export function ProductGallery({ images, mainImage, setMainImage }: ProductGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollUp = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({ top: -160, behavior: "smooth" });
-    }
+    containerRef.current?.scrollBy({ top: -160, behavior: "smooth" });
   };
 
   const scrollDown = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollBy({ top: 160, behavior: "smooth" });
-    }
+    containerRef.current?.scrollBy({ top: 160, behavior: "smooth" });
   };
 
   return (
@@ -36,28 +34,30 @@ export function ProductGallery({ images, mainImage, setMainImage }: ProductGalle
         className="flex flex-col gap-2 overflow-y-scroll max-h-[650px] w-full cursor-pointer"
         style={{
           scrollSnapType: "y mandatory",
-          scrollbarWidth: "none", // Firefox
-          msOverflowStyle: "none", // IE10+
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
         }}
       >
-        {images.map((img, idx) => (
-          <button
-            key={idx}
-            onClick={() => setMainImage(img)}
-            className={`flex-shrink-0 w-full h-36 overflow-hidden border rounded ${
-              mainImage === img
-                ? "border-black"
-                : "border-transparent hover:border-gray-300"
-            }`}
-            style={{ scrollSnapAlign: "start" }}
-          >
-            <img
-              src={img}
-              alt="Miniatura produto"
-              className="w-full h-full object-cover"
-            />
-          </button>
-        ))}
+        {images.map(({ url }, idx) => {
+          const src = url.startsWith("http") ? url : `${baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+          return (
+            <button
+              key={idx}
+              onClick={() => setMainImage(src)}
+              className={`flex-shrink-0 w-full h-36 overflow-hidden border rounded ${mainImage === src
+                  ? "border-black"
+                  : "border-transparent hover:border-gray-300"
+                }`}
+              style={{ scrollSnapAlign: "start" }}
+            >
+              <img
+                src={src}
+                alt="Miniatura produto"
+                className="w-full h-full object-cover"
+              />
+            </button>
+          );
+        })}
       </div>
 
       <button

@@ -6,9 +6,10 @@ import {
   ReactNode,
 } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Product } from "@/data/products"
 import { useUser } from "@/contexts/UserContext"
 import axios from "axios"
+import { Product } from "@/types/product"
+import { ProductFromAPI } from "@/types/api" // ✅ tipo correto da API
 
 interface FavoritesContextType {
   favorites: Product[]
@@ -35,48 +36,75 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     },
   })
 
-  // Carrega favoritos ao logar
+ function mapApiToProduct(data: ProductFromAPI): Product {
+  return {
+    id: String(data.id),
+    nome: data.name,
+    preco: `R$ ${data.price.toFixed(2).replace(".", ",")}`,
+    imagem: data.imagePath.startsWith("http")
+      ? data.imagePath
+      : `${import.meta.env.VITE_API_URL}${data.imagePath}`,
+    images: [data.imagePath],
+    sizes: ["P", "M", "G", "GG"],
+    description: data.description,
+  }
+}
+
   useEffect(() => {
     if (isLoggedIn && user) {
       api
         .get("/favorites")
         .then((res) => {
-          const validProducts = res.data.filter(
-            (p: Product | null) => p !== null
-          );
-          setFavorites(validProducts);
+          const parsed = res.data
+            .filter((p: ProductFromAPI | null) => p !== null)
+            .map((p: ProductFromAPI) => mapApiToProduct(p));
+          setFavorites(parsed);
         })
         .catch(() => setFavorites([]));
     } else {
       setFavorites([]);
     }
-  }, [isLoggedIn, user]);
+  }, [isLoggedIn, user])
 
   function showToast(message: string, type: "success" | "error") {
     setToast({ message, type })
     setTimeout(() => setToast(null), 3000)
   }
 
-  async function addFavorite(product: Product) {
-    try {
-      await api.post(`/favorites/${product.id}`)
-      setFavorites((prev) => {
-        if (prev.some((p) => p.id === product.id)) return prev
-        return [...prev, product]
-      })
-      showToast("Produto adicionado aos favoritos!", "success")
-    } catch {
-      showToast("Erro ao adicionar aos favoritos", "error")
-    }
+ async function addFavorite(product: Product) {
+  try {
+    await api.post(`/favorites/${product.id}`); // ← salva no banco
+
+    const baseUrl = import.meta.env.VITE_API_URL;
+
+    const imageUrl = product.imagem.startsWith("http")
+      ? product.imagem
+      : `${baseUrl}${product.imagem.startsWith("/") ? "" : "/"}${product.imagem}`;
+
+    const productWithFullUrl = { ...product, imagem: imageUrl };
+
+    setFavorites((old) => {
+      const alreadyExists = old.some((p) => p.id === product.id);
+      if (alreadyExists) return old;
+      return [...old, productWithFullUrl];
+    });
+
+    showToast("Produto adicionado aos favoritos", "success");
+  } catch {
+    showToast("Erro ao adicionar aos favoritos", "error");
   }
+}
+  
 
   async function removeFavorite(productId: string) {
     try {
-      await api.delete(`/favorites/${productId}`)
-      setFavorites((prev) => prev.filter((p) => p.id !== productId))
-      showToast("Produto removido dos favoritos", "error")
+      await api.delete(`/favorites/${productId}`);
+      setFavorites((prev) =>
+        prev.filter((p) => String(p.id) !== String(productId))
+      );
+      showToast("Produto removido dos favoritos", "error");
     } catch {
-      showToast("Erro ao remover dos favoritos", "error")
+      showToast("Erro ao remover dos favoritos", "error");
     }
   }
 

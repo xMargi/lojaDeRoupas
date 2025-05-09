@@ -68,9 +68,8 @@ export function ProductCard({ produto }: ProductCardProps) {
         <div className="aspect-[3/4] relative">
           <button
             onClick={handleFavorite}
-            className={`absolute top-2 right-2 z-10 bg-white rounded-full p-1 shadow hover:scale-110 transition ${
-              animate ? "animate-[pingOnce_0.3s_ease-out]" : ""
-            }`}
+            className={`absolute top-2 right-2 z-10 bg-white rounded-full p-1 shadow hover:scale-110 transition ${animate ? "animate-[pingOnce_0.3s_ease-out]" : ""
+              }`}
           >
             <Heart
               size={20}
@@ -80,7 +79,7 @@ export function ProductCard({ produto }: ProductCardProps) {
           </button>
 
           <img
-            src={produto.imagem}
+            src={`${import.meta.env.VITE_API_URL}${produto.imagem}`}
             alt={produto.nome}
             className="w-full h-full object-cover"
           />
@@ -97,11 +96,10 @@ export function ProductCard({ produto }: ProductCardProps) {
                     e.stopPropagation();
                     setSelectedSize(size);
                   }}
-                  className={`w-8 h-8 border text-sm font-semibold transition ${
-                    selectedSize === size
+                  className={`w-8 h-8 border text-sm font-semibold transition ${selectedSize === size
                       ? "bg-black text-white"
                       : "bg-white text-black"
-                  }`}
+                    }`}
                 >
                   {size}
                 </button>

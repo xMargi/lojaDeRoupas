@@ -1,43 +1,24 @@
 import useEmblaCarousel from 'embla-carousel-react'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import axios from 'axios'
 
 interface VideoItem {
-  titulo: string
-  videoUrl: string
-  thumbUrl?: string
-  link?: string
+  id: number
+  title: string
+  url: string
 }
-
-const videos: VideoItem[] = [
-  {
-    titulo: 'Coleção Surpresa',
-    videoUrl: '/videos/1.mp4',
-  },
-  {
-    titulo: 'Boldwear x NFL',
-    videoUrl: '/videos/1.mp4',
-  },
-  {
-    titulo: 'Boldwear x Sprite',
-    videoUrl: '/videos/1.mp4',
-  },
-  {
-    titulo: 'Coleção Surpresa',
-    videoUrl: '/videos/1.mp4',
-  },
-  {
-    titulo: 'Boldwear x NFL',
-    videoUrl: '/videos/1.mp4',
-  },
-  {
-    titulo: 'Boldwear x Sprite',
-    videoUrl: '/videos/1.mp4',
-  },
-]
 
 export function VideoCarrossel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start' })
+  const [videos, setVideos] = useState<VideoItem[]>([])
+  const baseUrl = import.meta.env.VITE_API_URL
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/videos`)
+      .then((res) => setVideos(res.data))
+      .catch(() => setVideos([]))
+  }, [baseUrl])
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -48,27 +29,19 @@ export function VideoCarrossel() {
         <h2 className="text-2xl font-bold mb-6 px-6">Coleções em Destaque</h2>
 
         <div className="relative">
-          {/* Botões */}
-          <button
-            onClick={scrollPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow hover:scale-105 transition"
-          >
+          <button onClick={scrollPrev} className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow hover:scale-105 transition">
             <ChevronLeft size={20} />
           </button>
-          <button
-            onClick={scrollNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow hover:scale-105 transition"
-          >
+          <button onClick={scrollNext} className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-2 rounded-full shadow hover:scale-105 transition">
             <ChevronRight size={20} />
           </button>
 
-          {/* Carrossel */}
           <div className="overflow-hidden px-0" ref={emblaRef}>
             <div className="flex gap-6">
-              {videos.map((video, index) => (
-                <div key={index} className="w-[450px] h-[527px] flex-shrink-0 relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
+              {videos.map((video) => (
+                <div key={video.id} className="w-[450px] h-[527px] flex-shrink-0 relative rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
                   <video
-                    src={video.videoUrl}
+                    src={`${baseUrl}${video.url}`}
                     className="w-full h-full object-cover"
                     autoPlay
                     muted
@@ -77,16 +50,8 @@ export function VideoCarrossel() {
                     height={720}
                   />
                   <div className="absolute bottom-4 left-4 text-white font-bold text-lg drop-shadow-lg">
-                    {video.titulo}
+                    {video.title}
                   </div>
-                  {video.link && (
-                    <a
-                      href={video.link}
-                      className="absolute bottom-4 right-4 px-3 py-1 border border-white text-white text-xs uppercase tracking-wide hover:bg-white hover:text-black transition"
-                    >
-                      Shop now
-                    </a>
-                  )}
                 </div>
               ))}
             </div>

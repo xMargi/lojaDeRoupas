@@ -2,12 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart, CartItem } from "@/contexts/CartContext";
-import { Product } from "@/data/products";
 import { ProductGallery } from "@/components/carousel/ProductGallery";
 import { ProductInfo } from "@/components/product/ProductInfo";
 import { ProductDescription } from "@/components/product/ProductDescription";
+import { ProductFromAPI } from "@/types/api";
 import axios from "axios";
-import { ProductFromAPI } from "@/types/api"; // importa tipo certo
+import { Product } from "@/types/product";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
+
+const baseUrl = import.meta.env.VITE_API_URL;
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -26,64 +29,63 @@ export default function ProductDetail() {
     if (!id) return;
 
     axios
-      .get(`http://localhost:3333/products/${id}`)
+      .get(`${baseUrl}/products/${id}`)
       .then((res) => {
         const data: ProductFromAPI = res.data.product;
 
-        // Mapeia para o formato do frontend
-        const parsedProduct: Product = {
+        console.log("🔍 Produto vindo da API:", data);
+
+        const imageUrl = `${baseUrl}${data.imagePath.startsWith("/") ? "" : "/"}${data.imagePath}`;
+
+        const parsed: Product = {
           id: String(data.id),
           nome: data.name,
           preco: `R$ ${data.price.toFixed(2).replace(".", ",")}`,
-          imagem: data.imagePath,
-          images: [data.imagePath],
+          imagem: imageUrl,
+          images: data.images?.length ? data.images : [imageUrl],
           sizes: ["P", "M", "G", "GG"],
           description: data.description,
         };
 
-        setProduct(parsedProduct);
-        setMainImage(parsedProduct.imagem);
-        if (parsedProduct.sizes && parsedProduct.sizes.length > 0) {
-          setSelectedSize(parsedProduct.sizes[0]);
-        }
+        setProduct(parsed);
+        setMainImage(imageUrl);
+        if (parsed.sizes?.length) setSelectedSize(parsed.sizes[0]);
       })
-      .catch(() => {
-        navigate("/");
+      .catch((err) => {
+        console.error("Erro ao buscar produto:", err);
+        // navigate("/");
       });
   }, [id, navigate]);
 
   if (!product) return null;
 
-  const availableSizes = product.sizes ?? ["P", "M", "G", "GG"];
-  const unitPrice = Number(product.preco.replace("R$", "").replace(/\./g, "").replace(",", ".").trim());
-
-  const showToast = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 3000);
-  };
+  const unitPrice = Number(
+    product.preco.replace("R$", "").replace(/\./g, "").replace(",", ".").trim()
+  );
 
   const handleBuyNow = () => {
     if (!selectedSize) {
       alert("Selecione um tamanho primeiro.");
       return;
     }
+
     const item: CartItem = {
-      id: +product.id,
+      id: Number(product.id),
       title: product.nome,
       price: unitPrice,
-      image: mainImage,
+      image: product.imagem,
       size: selectedSize,
       quantity,
     };
+
     addItem(item);
-    showToast();
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3000);
     navigate("/checkout");
   };
 
   const scrollToTable = () => {
-    if (tableRef.current) {
-      tableRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    tableRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -106,8 +108,11 @@ export default function ProductDetail() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-          <ProductGallery images={product.images ?? []} mainImage={mainImage} setMainImage={setMainImage} />
-
+          <ProductGallery
+            images={(product.images ?? []).map(img => typeof img === 'string' ? { url: img } : img)}
+            mainImage={mainImage}
+            setMainImage={setMainImage}
+          />
           <div className="flex justify-center max-w-[600px] w-full">
             <motion.img
               key={mainImage}
@@ -126,7 +131,7 @@ export default function ProductDetail() {
             productName={product.nome}
             price={unitPrice}
             discountedPrice={undefined}
-            availableSizes={availableSizes}
+            availableSizes={product.sizes ?? ["P", "M", "G", "GG"]}
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}
             quantity={quantity}
@@ -138,6 +143,9 @@ export default function ProductDetail() {
 
         <div className="mt-12">
           <ProductDescription tableRef={tableRef} />
+        </div>
+        <div className="mt-12">
+          <ReviewsSection productId={product.id} />
         </div>
       </div>
     </div>

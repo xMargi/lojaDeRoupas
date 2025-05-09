@@ -1,12 +1,31 @@
-// src/components/CarrosselProdutos.tsx
 import useEmblaCarousel from "embla-carousel-react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "./ProductCard";
-import { PRODUCTS } from "@/data/products";
+import { Product } from "@/types/product";
+import axios from "axios";
+import { ProductFromAPI } from "@/types/api";
 
 export function CarrosselProdutos() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const baseUrl = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/products/featured`).then((res) => {
+      const parsed = res.data.products.map((p: ProductFromAPI) => ({
+        id: String(p.id),
+        nome: p.name,
+        preco: `R$ ${p.price.toFixed(2).replace(".", ",")}`,
+        imagem: p.imagePath,
+        images: p.images ?? [],
+        sizes: ["P", "M", "G", "GG"],
+        description: p.description,
+      }));
+      setProducts(parsed);
+    });
+  }, [baseUrl]);
 
   const scrollPrev = useCallback(() => {
     emblaApi?.scrollPrev();
@@ -22,7 +41,6 @@ export function CarrosselProdutos() {
         <h2 className="text-2xl font-bold mb-6">Lançamentos</h2>
 
         <div className="relative">
-          {/* Botões */}
           <button
             onClick={scrollPrev}
             className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 bg-white p-2 shadow rounded-full hover:scale-105 transition"
@@ -36,10 +54,9 @@ export function CarrosselProdutos() {
             <ChevronRight size={20} />
           </button>
 
-          {/* Carrossel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
-              {PRODUCTS.map((produto) => (
+              {products.map((produto) => (
                 <ProductCard key={produto.id} produto={produto} />
               ))}
             </div>

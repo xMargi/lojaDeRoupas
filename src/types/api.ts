@@ -7,5 +7,6 @@ export interface ProductFromAPI {
     description: string
     imagePath: string
     categories?: { id: number; name: string }[]
+    images?: { url: string }[];
   }
   

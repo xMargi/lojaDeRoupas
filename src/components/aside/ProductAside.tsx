@@ -4,17 +4,16 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 import { Link } from "react-router-dom";
 
 interface ProductAsideProps {
-    open: boolean;
-    setOpen: (open: boolean) => void;
-  }
-  
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
 
 export function ProductAside({ open, setOpen }: ProductAsideProps) {
-    const { favorites, removeFavorite } = useFavorites();
+  const { favorites, removeFavorite } = useFavorites();
 
   return (
     <>
-      {/* Botão Flutuante no canto inferior direito */}
+      {/* Botão Flutuante */}
       <div className="fixed bottom-6 right-6 z-40 select-none">
         <button
           onClick={() => setOpen(true)}
@@ -25,7 +24,7 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
         </button>
       </div>
 
-      {/* Aside de Favoritos */}
+      {/* Aside */}
       <AnimatePresence>
         {open && (
           <motion.aside
@@ -35,7 +34,7 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
             transition={{ duration: 0.3 }}
             className="fixed top-0 right-0 h-full w-80 bg-white shadow-lg border-l border-gray-200 p-6 flex flex-col gap-6 z-50"
           >
-            {/* Botão Fechar */}
+            {/* Botão fechar */}
             <button
               onClick={() => setOpen(false)}
               className="ml-auto text-gray-500 hover:text-[#09122C] transition"
@@ -43,7 +42,6 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
               <X size={24} />
             </button>
 
-            {/* Conteúdo dos Favoritos */}
             <div className="flex-1 overflow-y-auto">
               <h2 className="text-lg font-bold mb-4">Seus Favoritos</h2>
 
@@ -58,21 +56,19 @@ export function ProductAside({ open, setOpen }: ProductAsideProps) {
                       key={product.id}
                       className="flex items-center justify-between p-2 border rounded-md hover:bg-gray-50 transition"
                     >
-                      {/* Link para a página do produto */}
                       <Link
                         to={`/product/${product.id}`}
                         className="flex items-center gap-3 flex-1"
-                        onClick={() => setOpen(false)} 
+                        onClick={() => setOpen(false)}
                       >
                         <img
-                          src={product.imagem}
-                          alt={product.nome}
+                          src={product.imagem || "/placeholder.png"}
+                          alt={product.nome || "Produto"}
                           className="w-12 h-12 object-cover rounded-md"
                         />
-                        <span className="text-sm font-medium">{product.nome}</span>
+                        <span className="text-sm font-medium">{product.nome || "Sem nome"}</span>
                       </Link>
 
-                      {/* Botão Remover */}
                       <button
                         onClick={() => removeFavorite(product.id)}
                         title="Remover"
